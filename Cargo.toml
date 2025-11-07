@@ -1,0 +1,57 @@
+[package]
+edition = "2024"
+name = "stm_display"
+version = "0.1.0"
+
+[dependencies]
+cortex-m = { version = "0.7.7", features = ["inline-asm", "critical-section-single-core"] }
+cortex-m-rt = "0.7.5"
+defmt = { version = "1.0.1", optional = true }
+defmt-rtt = { version = "1.1.0", optional = true }
+embassy-executor = { version = "0.9.1", features = ["arch-cortex-m", "executor-thread"] }
+embassy-futures = "0.1.2"
+embassy-sync = "0.7.2"
+embassy-stm32 = { version = "0.4.0", features = ["memory-x", "stm32f411ce", "time", "time-driver-any"] }
+embassy-time = { version = "0.5.0", features = ["tick-hz-32_768"] }
+panic-halt = "1.0.0"
+panic-probe = { version = "1.0.0", features = ["print-defmt"], optional = true }
+embedded-graphics = "0.8.1"
+static_cell = "2.1.1"
+heapless = "0.9.1"
+
+[[bin]]
+name = "stm_display"
+test = false
+bench = false
+
+[profile.dev]
+debug = true
+lto = true
+opt-level = "z"
+incremental = true
+panic = "abort"
+
+[profile.release]
+debug = true
+lto = true
+codegen-units = 1
+opt-level = "z"
+incremental = true
+panic = "abort"
+
+[features]
+defmt = ["dep:defmt"]
+defmt-rtt = ["dep:defmt-rtt"]
+panic-probe = ["dep:panic-probe"]
+default = ["debug"]
+debug = [
+    "defmt",
+    "defmt-rtt",
+    "panic-probe",
+    "embassy-executor/defmt",
+    "embassy-sync/defmt",
+    "embassy-futures/defmt",
+    "embassy-time/defmt",
+    "embassy-time/defmt-timestamp-uptime",
+    "embassy-stm32/defmt",
+]
